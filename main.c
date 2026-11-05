@@ -26,7 +26,6 @@
 // TYPES AND STRUCTURES DEFINITION
 //----------------------------------------------------------------------------------
 
-
 typedef struct {
 
     const int screenWidth;
@@ -48,6 +47,8 @@ typedef struct {
     bool btnSettings; // true when Settings button is pressed
     bool btnGoBackToMenu; // true when Go Back To Menu button is pressed
 
+    bool showStats; // true when Showing Stats
+
     int focus; // int representing the text field that's focused at the moment or -1 if nothing is
     char buffer[INPUT_CAP_TEXT_BUFFER]; // buffer for text input in whichever text field is focused at the moment
     
@@ -60,7 +61,6 @@ typedef struct {
     Constraints system; // Constraints of the system
 
 } State;
-
 
 //----------------------------------------------------------------------------------
 // MODULE FUNCTIONS DECLARATION
@@ -121,6 +121,7 @@ int main(void){
         .btnRestart = false,
         .btnSettings = false,
         .btnGoBackToMenu = false,
+        .showStats = false,
 
         .focus = -1,
 
@@ -152,7 +153,7 @@ int main(void){
     };
 
 
-    InitWindow(state.screenWidth, state.screenHeight, "Simulation");
+    InitWindow(state.screenWidth, state.screenHeight, "Double pendulum");
     SetTargetFPS(state.drawingFPS);
     
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
@@ -247,6 +248,14 @@ void UpdateFrame(void *void_state) {
 
     }
 
+    if (state->running == 1) { // Handle stats showing
+
+        if (IsKeyPressed(KEY_E)) {
+            state->showStats = (state->showStats) ? false : true;
+        }
+
+    }
+
     else if (state->running == 2) {
 
         if (state->btnGoBackToMenu || IsKeyPressed(KEY_B)) {
@@ -326,6 +335,29 @@ void DrawSimulation(State *state) {
     // Mass 2
     DrawCircle( x_mass, y_mass, state->system.m2/10, DARKBLUE);
 
+
+    // Draw instructions
+    // DrawText("Press [E] for stats", state->screenWidth/48, state->screenHeight*90/96, 20, state->text_color);
+
+    // Draw stats
+    if (state->showStats) {
+
+            int line = 20;
+            DrawText(TextFormat("Time speed multiplier: %g", state->timeSpeed),       state->screenWidth/48, state->screenHeight*5/12, 20, state->text_color);
+            DrawText(TextFormat("Size of first rod:      %g", state->system.l1),       state->screenWidth/48, state->screenHeight*5/12 + line, 20, state->text_color);
+            DrawText(TextFormat("Size of second rod:   %g", state->system.l2),       state->screenWidth/48, state->screenHeight*5/12 + 2*line, 20, state->text_color);
+            DrawText(TextFormat("Gravity:                  %g", state->system.g),        state->screenWidth/48, state->screenHeight*5/12 + 3*line, 20, state->text_color);
+            DrawText(TextFormat("Mass 1 (joint):           %g", state->system.m1),       state->screenWidth/48, state->screenHeight*5/12 + 4*line, 20, state->text_color);
+            DrawText(TextFormat("Mass 2:                   %g", state->system.m2),       state->screenWidth/48, state->screenHeight*5/12 + 5*line, 20, state->text_color);
+            DrawText(TextFormat("Drag coefficient 1:     %g", state->system.c1),       state->screenWidth/48, state->screenHeight*5/12 + 6*line, 20, state->text_color);
+            DrawText(TextFormat("Drag coefficient 2:    %g", state->system.c2),       state->screenWidth/48, state->screenHeight*5/12 + 7*line, 20, state->text_color);
+            DrawText(TextFormat("Angle 1:                   %g", state->stateVector.a),  state->screenWidth/48, state->screenHeight*5/12 +  8*line, 20, state->text_color);
+            DrawText(TextFormat("Angular velocity 1:     %g", state->stateVector.a_), state->screenWidth/48, state->screenHeight*5/12 + 9*line, 20, state->text_color);
+            DrawText(TextFormat("Angle 2:                  %g", state->stateVector.b),  state->screenWidth/48, state->screenHeight*5/12 + 10*line, 20, state->text_color);
+            DrawText(TextFormat("Angular velocity 2:    %g", state->stateVector.b_), state->screenWidth/48, state->screenHeight*5/12 + 11*line, 20, state->text_color);
+
+    }
+
     EndDrawing();
 
 }
@@ -341,7 +373,7 @@ void DrawPauseScreen(State *state) {
 
     // Draw instructions
     //GuiLabel((Rectangle){ 200, 100, 2300, 36 }, "Use the BUTTONS or KEY SHORTCUTS:");
-    DrawText("Use the BUTTONS or KEY SHORTCUTS:", sw/48, sh*90/96, 20, state->text_color);
+    DrawText("Use the BUTTONS or KEY SHORTCUTS", sw/48, sh*90/96, 20, state->text_color);
 
 
     // Draw buttons
@@ -369,7 +401,7 @@ void DrawSettings(State *state) {
     DrawDiagram(state);
     
     // Draw instructions
-    DrawText("Use the BUTTONS or KEY SHORTCUTS:", sw/48, sh*90/96, 20, state->text_color);
+    DrawText("Press [E] to see simulation stats when in simulation mode", sw/48, sh*90/96, 20, state->text_color);
 
     // Draw buttons
     state->btnGoBackToMenu = GuiButton((Rectangle){ sw*41/48, sh*7/8, sw/8, sh/10}, "BACK [B]");
