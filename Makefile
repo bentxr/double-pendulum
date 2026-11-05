@@ -1,7 +1,7 @@
 CC      := gcc
 CFLAGS  := -std=c99 -Wall -Wextra -O2
 LDLIBS  := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-TARGET  := build/desktop/template
+TARGET  := build/desktop/double-pendulum
 SRC     := $(wildcard *.c)
 
 -include .env
