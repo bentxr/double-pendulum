@@ -15,6 +15,7 @@
 #define MY_BUTTON_COLOR_NORMAL 0xA6A6A6FF // light grey
 #define MY_BUTTON_COLOR_FOCUSED 0xCCCCCCFF // lighter grey
 #define MY_BUTTON_COLOR_PRESSED 0x808080FF // grey
+#define MY_DEFAULT_TEXT_SIZE 20
 
 #define START_A 0//(PI/4)
 #define START_B 0//(-PI/2)
@@ -141,8 +142,8 @@ int main(void){
 
         .system = {
 
-            .l1 = 300.0,
-            .l2 = 200.0,
+            .l1 = 200.0,
+            .l2 = 150.0,
             .g = 981,
             .m1 = 100,
             .m2 = 100,
@@ -156,7 +157,7 @@ int main(void){
     InitWindow(state.screenWidth, state.screenHeight, "Double pendulum");
     SetTargetFPS(state.drawingFPS);
     
-    GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, MY_DEFAULT_TEXT_SIZE);
     GuiSetStyle( DEFAULT, TEXT_COLOR_NORMAL, MY_TEXT_COLOR); 
     GuiSetStyle( DEFAULT, BACKGROUND_COLOR, MY_BACKGROUND_COLOR); 
 
@@ -171,6 +172,8 @@ int main(void){
     GuiSetStyle( BUTTON, BORDER_COLOR_NORMAL, MY_BUTTON_COLOR_NORMAL); 
     GuiSetStyle( BUTTON, BORDER_COLOR_FOCUSED, MY_BUTTON_COLOR_FOCUSED); 
     GuiSetStyle( BUTTON, BORDER_COLOR_PRESSED, MY_BUTTON_COLOR_PRESSED); 
+
+    GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
 
     GuiSetStyle( TEXTBOX, TEXT_COLOR_NORMAL, MY_TEXT_COLOR); 
     GuiSetStyle( TEXTBOX, TEXT_COLOR_FOCUSED, MY_TEXT_COLOR); 
@@ -195,6 +198,7 @@ int main(void){
     #if defined(PLATFORM_WEB)
         emscripten_set_main_loop_arg(UpdateFrame, &state, state.drawingFPS, 1);
     #else
+        SetWindowMinSize(800, 450);
         while (!WindowShouldClose()) UpdateFrame(&state);
     #endif
 
@@ -217,7 +221,6 @@ void UpdateFrame(void *void_state) {
     const double dt = (state->computeOnSimulatedTime) ? state->timeSpeed/state->computingFPS : 1.0/state->computingFPS;
     state->screenHeight = GetScreenHeight();
     state->screenWidth = GetScreenWidth();
-
     // -------------------------------------------
     // LISTEN FOR PRESSES AND UPDATE VARIABLES
     // -------------------------------------------
@@ -345,18 +348,18 @@ void DrawSimulation(State *state) {
     if (state->showStats) {
 
             int line = 20;
-            DrawText(TextFormat("Time speed multiplier: %g", state->timeSpeed),       state->screenWidth/48, state->screenHeight*5/12, 20, state->text_color);
-            DrawText(TextFormat("Size of first rod:      %g", state->system.l1),       state->screenWidth/48, state->screenHeight*5/12 + line, 20, state->text_color);
-            DrawText(TextFormat("Size of second rod:   %g", state->system.l2),       state->screenWidth/48, state->screenHeight*5/12 + 2*line, 20, state->text_color);
-            DrawText(TextFormat("Gravity:                  %g", state->system.g),        state->screenWidth/48, state->screenHeight*5/12 + 3*line, 20, state->text_color);
-            DrawText(TextFormat("Mass 1 (joint):           %g", state->system.m1),       state->screenWidth/48, state->screenHeight*5/12 + 4*line, 20, state->text_color);
-            DrawText(TextFormat("Mass 2:                   %g", state->system.m2),       state->screenWidth/48, state->screenHeight*5/12 + 5*line, 20, state->text_color);
-            DrawText(TextFormat("Drag coefficient 1:     %g", state->system.c1),       state->screenWidth/48, state->screenHeight*5/12 + 6*line, 20, state->text_color);
-            DrawText(TextFormat("Drag coefficient 2:    %g", state->system.c2),       state->screenWidth/48, state->screenHeight*5/12 + 7*line, 20, state->text_color);
-            DrawText(TextFormat("Angle 1:                   %g", state->stateVector.a),  state->screenWidth/48, state->screenHeight*5/12 +  8*line, 20, state->text_color);
-            DrawText(TextFormat("Angular velocity 1:     %g", state->stateVector.a_), state->screenWidth/48, state->screenHeight*5/12 + 9*line, 20, state->text_color);
-            DrawText(TextFormat("Angle 2:                  %g", state->stateVector.b),  state->screenWidth/48, state->screenHeight*5/12 + 10*line, 20, state->text_color);
-            DrawText(TextFormat("Angular velocity 2:    %g", state->stateVector.b_), state->screenWidth/48, state->screenHeight*5/12 + 11*line, 20, state->text_color);
+            DrawText(TextFormat("Time speed multiplier: %g", state->timeSpeed),       state->screenWidth/48, state->screenHeight - 13*line, 20, state->text_color);
+            DrawText(TextFormat("Size of first rod:      %g", state->system.l1),       state->screenWidth/48, state->screenHeight - 12*line, 20, state->text_color);
+            DrawText(TextFormat("Size of second rod:   %g", state->system.l2),       state->screenWidth/48, state->screenHeight - 11*line, 20, state->text_color);
+            DrawText(TextFormat("Gravity:                  %g", state->system.g),        state->screenWidth/48, state->screenHeight - 10*line, 20, state->text_color);
+            DrawText(TextFormat("Mass 1 (joint):           %g", state->system.m1),       state->screenWidth/48, state->screenHeight - 9*line, 20, state->text_color);
+            DrawText(TextFormat("Mass 2:                   %g", state->system.m2),       state->screenWidth/48, state->screenHeight - 8*line, 20, state->text_color);
+            DrawText(TextFormat("Drag coefficient 1:     %g", state->system.c1),       state->screenWidth/48, state->screenHeight - 7*line, 20, state->text_color);
+            DrawText(TextFormat("Drag coefficient 2:    %g", state->system.c2),       state->screenWidth/48, state->screenHeight - 6*line, 20, state->text_color);
+            DrawText(TextFormat("Angle 1:                   %g", state->stateVector.a),  state->screenWidth/48, state->screenHeight - 5*line, 20, state->text_color);
+            DrawText(TextFormat("Angular velocity 1:     %g", state->stateVector.a_), state->screenWidth/48, state->screenHeight - 4*line, 20, state->text_color);
+            DrawText(TextFormat("Angle 2:                  %g", state->stateVector.b),  state->screenWidth/48, state->screenHeight - 3*line, 20, state->text_color);
+            DrawText(TextFormat("Angular velocity 2:    %g", state->stateVector.b_), state->screenWidth/48, state->screenHeight - 2*line, 20, state->text_color);
 
     }
 
@@ -377,12 +380,18 @@ void DrawPauseScreen(State *state) {
     //GuiLabel((Rectangle){ 200, 100, 2300, 36 }, "Use the BUTTONS or KEY SHORTCUTS:");
     DrawText("Use the BUTTONS or KEY SHORTCUTS", sw/48, sh*90/96, 20, state->text_color);
 
+  
 
     // Draw buttons
+    const char* textSettings = TextFormat("SETTINGS [S]");
+    state->btnSettings = GuiButton((Rectangle){ sw/2 - GetTextWidth(textSettings), sh/10 + 8*MY_DEFAULT_TEXT_SIZE, 2*GetTextWidth(textSettings), 2*MY_DEFAULT_TEXT_SIZE}, textSettings);
 
-    state->btnStopContinue = GuiButton((Rectangle){ sw/3, sw/10, sw/3, sh/10}, (state->time != 0.0) ? "RESUME [SPACE]" : "START [SPACE]");
-    state->btnRestart = GuiButton((Rectangle){ sw/3, sw*2/10, sw/3, sh/10}, "RESTART [R]");
-    state->btnSettings = GuiButton((Rectangle){ sw/3, sw*3/10, sw/3, sh/10}, "SETTINGS [S]");
+    const char* textRestart = TextFormat("RESTART [R]"); 
+    state->btnRestart = GuiButton((Rectangle){ sw/2 - GetTextWidth(textSettings), sh/10 + 4*MY_DEFAULT_TEXT_SIZE, 2*GetTextWidth(textSettings), 2*MY_DEFAULT_TEXT_SIZE}, textRestart);
+    
+    const char* textStopContinue = TextFormat((state->time != 0.0) ? "RESUME [SPACE]" : "START [SPACE]");
+    state->btnStopContinue = GuiButton((Rectangle){ sw/2 - GetTextWidth(textSettings), sh/10, 2*GetTextWidth(textSettings), 2*MY_DEFAULT_TEXT_SIZE}, textStopContinue);
+    
 
     EndDrawing();
 }
@@ -403,21 +412,16 @@ void DrawSettings(State *state) {
     DrawDiagram(state);
     
     // Draw instructions
-    DrawText("Press [E] to see simulation stats when in simulation mode", sw/48, sh*90/96, 20, state->text_color);
+    DrawText("Press [E] to see simulation stats when running", sw/48, sh*90/96, 20, state->text_color);
 
     // Draw buttons
-    state->btnGoBackToMenu = GuiButton((Rectangle){ sw*41/48, sh*7/8, sw/8, sh/10}, "BACK [B]");
+    const char* textGoBackMenu = TextFormat("BACK [B]");
+    state->btnGoBackToMenu = GuiButton((Rectangle){ sw - 2.2*GetTextWidth(textGoBackMenu), sh-2.5*MY_DEFAULT_TEXT_SIZE, 2*GetTextWidth(textGoBackMenu), 2*MY_DEFAULT_TEXT_SIZE}, textGoBackMenu);
 
     EndDrawing();
 }
 
 void SettingsTextFields(State *state) {
-
-    // If the mouse hovers the text field the cursor is changed and if the user clicks the focus changes to the field
-    /* if (CheckCollisionPointRec(GetMousePosition(), box)) {
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) state->focus = textFieldIndex;
-    } */
 
     if (state->focus >= 0 && IsKeyPressed(KEY_ESCAPE)) state->focus = -1;
 
@@ -430,18 +434,18 @@ void SettingsTextFields(State *state) {
     // Bounds for the text input fields in settings
     Rectangle bounds[12] = {
 
-        { sw/3, sh*0.5/10, sw/8, sh/10}, 
-        { sw/3, sh*1.5/10, sw/8, sh/10},
-        { sw/3, sh*2.5/10, sw/8, sh/10},
-        { sw/3, sh*3.5/10, sw/8, sh/10},
-        { sw/3, sh*4.5/10, sw/8, sh/10},
-        { sw/3, sh*5.5/10, sw/8, sh/10},
-        { sw/3, sh*6.5/10, sw/8, sh/10},
-        { sw/3, sh*7.5/10, sw/8, sh/10},
-        { sw*5/6, sh*0.5/10, sw/8, sh/10}, 
-        { sw*5/6, sh*1.5/10, sw/8, sh/10},
-        { sw*5/6, sh*2.5/10, sw/8, sh/10},
-        { sw*5/6, sh*3.5/10, sw/8, sh/10},
+        { sw/3, sh*0.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE}, 
+        { sw/3, sh*1.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*2.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*3.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*4.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*5.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*6.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw/3, sh*7.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw*5/6, sh*0.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE}, 
+        { sw*5/6, sh*1.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw*5/6, sh*2.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
+        { sw*5/6, sh*3.5/10, sw/8, 2*MY_DEFAULT_TEXT_SIZE},
 
     };
 
@@ -482,6 +486,13 @@ void SettingsTextFields(State *state) {
     for (int i = 0; i < 12; i++) {
 
         focused = state->focus == i;
+
+        //TODO
+        // If the mouse hovers the text field the cursor is changed and if the user clicks the focus changes to the field
+        /*if (CheckCollisionPointRec(GetMousePosition(), bounds[i])) {
+            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) state->focus = i;
+        } else SetMouseCursor(MOUSE_CURSOR_ARROW); */
 
         if (!focused) { // If not focused the field draws the current value
             snprintf(tmp, sizeof(tmp), NUM_FORMAT, *editable_values[i]);
