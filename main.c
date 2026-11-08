@@ -28,8 +28,8 @@
 
 typedef struct {
 
-    const int screenWidth;
-    const int screenHeight;
+    int screenWidth;
+    int screenHeight;
 
     int computingFPS; // computation FPS (time steps per second)
     int drawingFPS; //  rendering FPS
@@ -103,8 +103,8 @@ int main(void){
     
     State state = {
 
-        .screenWidth = 800,
-        .screenHeight = 450,
+        .screenWidth = 1280,
+        .screenHeight = 720,
 
         .computingFPS = 120,
         .drawingFPS = 60,
@@ -141,8 +141,8 @@ int main(void){
 
         .system = {
 
-            .l1 = 200.0,
-            .l2 = 150.0,
+            .l1 = 300.0,
+            .l2 = 200.0,
             .g = 981,
             .m1 = 100,
             .m2 = 100,
@@ -152,7 +152,7 @@ int main(void){
 
     };
 
-
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(state.screenWidth, state.screenHeight, "Double pendulum");
     SetTargetFPS(state.drawingFPS);
     
@@ -215,6 +215,8 @@ void UpdateFrame(void *void_state) {
 
     State *state = (State *)void_state;
     const double dt = (state->computeOnSimulatedTime) ? state->timeSpeed/state->computingFPS : 1.0/state->computingFPS;
+    state->screenHeight = GetScreenHeight();
+    state->screenWidth = GetScreenWidth();
 
     // -------------------------------------------
     // LISTEN FOR PRESSES AND UPDATE VARIABLES
